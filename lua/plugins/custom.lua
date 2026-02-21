@@ -1,14 +1,4 @@
 return {
-  -- Theme
-  {
-    "scottmckendry/cyberdream.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd("colorscheme cyberdream")
-    end,
-  },
-
   -- Telescope (LazyVim already has telescope, but this is ok)
   {
     "nvim-telescope/telescope-fzf-native.nvim",
