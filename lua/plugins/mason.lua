@@ -1,15 +1,15 @@
 return {
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = "Mason",
   },
 
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     event = "VeryLazy",
-    dependencies = { "williamboman/mason.nvim" },
+    dependencies = { "mason-org/mason.nvim" },
     opts = {
-      ensure_installed = { "lua_ls", "tsserver", "pyright" },
+      ensure_installed = { "lua_ls", "ts_ls", "pyright" },
     },
   },
 }
