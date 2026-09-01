@@ -20,22 +20,43 @@ vim.g.mapleader = " "
 -- Basic settings
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.tabstop = 4
+vim.opt.tabstop = 3
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.termguicolors = true
 vim.opt.mouse = "a"
+vim.opt.cursorline = false
 vim.keymap.set("n", "<F2>", ":Ex<CR>", { noremap = true, silent = true })
-
+vim.keymap.set("n", "<C-x>", "v", { noremap = true, silent = true })
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
 -- Set GUI font for Neovide
-vim.opt.guifont = "FiraCode Nerd Font:h14"
+vim.opt.guifont = "FiraCode Nerd Font:h11"
 
 vim.g.tokyonight_style = "storm"
-vim.g.tokyonight_transparent = false
+vim.g.tokyonight_transparent = true
 vim.cmd[[colorscheme tokyonight]]
 
+-- Transparent background (colorscheme ke BAAD daalo)
+vim.api.nvim_set_hl(0, 'Normal',       { bg = 'none' })
+vim.api.nvim_set_hl(0, 'NormalFloat',  { bg = 'none' })
+vim.api.nvim_set_hl(0, 'FloatBorder',  { bg = 'none' })
+vim.api.nvim_set_hl(0, 'FloatTitle',   { bg = 'none' })
+vim.api.nvim_set_hl(0, 'Pmenu',        { bg = 'none' })
+vim.api.nvim_set_hl(0, 'PmenuSel',     { bg = 'none' })
+vim.api.nvim_set_hl(0, 'PmenuBorder',  { bg = 'none' })
+vim.api.nvim_set_hl(0, 'NormalNC',     { bg = 'none' })
+vim.api.nvim_set_hl(0, 'SignColumn',   { bg = 'none' })
+vim.api.nvim_set_hl(0, 'LineNr',       { bg = 'none' })
+vim.api.nvim_set_hl(0, 'CursorLineNr', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'StatusLine',   { bg = 'none' })
+vim.api.nvim_set_hl(0, 'WinSeparator', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'EndOfBuffer',  { bg = 'none' })
+
+-- vim.opt.statusline = " "
+-- vim.api.nvim_set_hl(0, 'StatusLine',   { bg = 'none', fg = 'none' })
+-- vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', fg = 'none' })
 -- Railgun / laser cursor
--- vim.g.neovide_cursor_vfx_mode = "railgun"
+-- vim.g.neovide_cursor_vfx_mode = "pixiedust"
 -- vim.g.neovide_cursor_vfx_opacity = 200
 -- vim.g.neovide_cursor_vfx_particle_lifetime = 1.2
 -- vim.g.neovide_cursor_vfx_particle_density = 12
@@ -45,8 +66,7 @@ vim.cmd[[colorscheme tokyonight]]
 --
 -- -- Cursor smoothness
 -- vim.g.neovide_cursor_animation_length = 0.05
-vim.g.neovide_scroll_animation_length = 0.15
-
+-- vim.g.neovide_scroll_animation_length = 0.15
 -- Telescope keymaps
 vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
 vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<CR>")
@@ -65,7 +85,13 @@ lspconfig.pyright.setup({})
 -- fullscreen 
 if vim.g.neovide then
     vim.g.neovide_fullscreen = true
+    vim.g.neovide_opacity = 0.6
+    vim.g.neovide_window_blurred = true
 end
+
+-- Set background color via Neovim highlights instead
+vim.api.nvim_set_hl(0, "Normal", { bg = "#180326" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "#180326" })
 
 -- rename file keymap
 vim.keymap.set("n", "<leader>rn", function()
@@ -102,7 +128,13 @@ vim.keymap.set("n", "<F2>", function()
         local buf = vim.api.nvim_win_get_buf(win)
         if vim.bo[buf].filetype == "netrw" then
             netrw_open = true
-            vim.api.nvim_win_close(win, true)
+            -- ✅ only close if it's not the last window
+            if #vim.api.nvim_list_wins() > 1 then
+                vim.api.nvim_win_close(win, true)
+            else
+                vim.cmd("bd")  -- close buffer instead if last window
+            end
+            break
         end
     end
 
@@ -110,3 +142,11 @@ vim.keymap.set("n", "<F2>", function()
         vim.cmd("Ex")
     end
 end, { desc = "Toggle :Ex" })
+
+vim.keymap.set({ "n", "v" }, "<M-F>", function()
+    require("conform").format({
+        lsp_fallback = true,
+        async        = false,
+        timeout_ms   = 500,
+    })
+end, { desc = "Format file" })

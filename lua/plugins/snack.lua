@@ -17,6 +17,18 @@ return {
           },
         },
       },
+      picker = {
+        sources = {
+          explorer = {
+            layout = {
+              layout = {
+                position = "right",
+                width = 25,
+              },
+            },
+          },
+        },
+      },
     },
   },
 }
